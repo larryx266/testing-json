@@ -85,7 +85,7 @@
         // CORS might be able to be fixed with AWS CLI command.
         fetch(lambdaServer.server+"/getByEmail", {
           method: "POST",
-          body: JSON.stringify({"email": userEmail, "jwtToken": sessionJWTToken}),
+          body: JSON.stringify({email: userEmail, jwtToken: sessionJWTToken}),
           headers: {'Content-Type': 'application/json;charset=utf-8'}
         })
           .then(res => res.json())

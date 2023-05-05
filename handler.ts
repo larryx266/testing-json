@@ -328,7 +328,7 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
                     return;
                 }
 
-                // no user entries yet (which is ok)
+                // no user entries yet (which is ok?)
                 else {
                     // res.status(404).json(
                     //     {
