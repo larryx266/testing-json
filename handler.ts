@@ -248,21 +248,6 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
 });
 
 app.post("/getByEmail", async function (req: Request, res: Response) {
-    let emaill: any = "";
-    try {
-        emaill = req.body.email
-            .catch(function (err) {
-                debuglog("Failed to get email var");
-                debuglog(JSON.stringify(err));
-                res.status(401).json({ error: "failred to get email var" });
-                return;
-            });
-    }
-    catch{
-        res.status(401).json({ error: "email var doesnt exist" });
-        return; 
-    }
-
         try {
             const ticket: any = await google_client.verifyIdToken(
                 {
@@ -287,7 +272,7 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
         FilterExpression: "email = :email",
         ExpressionAttributeValues:
         {
-            ":email": { S: emaill }
+            ":email": { S: req.body.email }
         }
     }
 
