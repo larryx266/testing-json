@@ -425,6 +425,7 @@ app.post("/getById", async function (req: Request, res: Response) {
 
                     debuglog("getbyId Data Count2: " + data.Count)
                     res.json(data.Items);
+                    return;
                 }
                 else {
                     res.status(404).json(
