@@ -39,10 +39,12 @@
       function handleCredentialResponse(response) {
         const idToken = response.credential;
         const decoded = jwt_decode(idToken);
-        sessionJWTToken = response;
-        userEmail = response.email;
 
         console.log(decoded);
+        sessionJWTToken = response;
+        userEmail = decoded.email;
+        console.log("session token: " + sessionJWTToken);
+
         if (decoded != null) {
           console.log("entered");
           console.log("email 1: " + userEmail);

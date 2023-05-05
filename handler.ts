@@ -62,14 +62,7 @@ function validateSchema(instance: any): ValidationResult {
 }
 
 app.use(express.json({ limit: '20MB' })); //To enable larger file upload upto 20M
-
-/*const corsOptions = {
-    origin: "*",
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
-  };*/
-app.use(cors());//corsOptions));
+app.use(cors());
 
 app.post("/heartbeat", async function (req: Request, res: Response) {
     res.status(200).json(
@@ -348,8 +341,7 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
         res.status(500).json(
             {
                 error: "Could not retreive user",
-                errorString: err,
-                errorReq: req.body
+                errorString: err
             });
         return;
     }
