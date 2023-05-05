@@ -323,10 +323,11 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
                     res.json(data.Items);
                 }
                 else {
-                    res.status(404).json(
-                        {
-                            error: "Could not find user with provided email"
-                        });
+                    // res.status(404).json(
+                    //     {
+                    //         error: "Could not find user with provided email"
+                    //     });
+                    res.json(null);
                 }
             }
         );
@@ -416,10 +417,11 @@ app.post("/getById", async function (req: Request, res: Response) {
                     res.json(data.Items);
                 }
                 else {
-                    res.status(404).json(
-                        {
-                            error: "Could not find user with provided Id"
-                        });
+                    // res.status(404).json(
+                    //     {
+                    //         error: "Could not find user with provided Id"
+                    //     });
+                    res.json(null);
                 }
             }
         );
