@@ -99,6 +99,8 @@ jobs:
       with:		
         args: -c "serverless deploy --stage prod"		
         entrypoint: /bin/sh		
+    - name: Set client bucket to public
+      run: aws s3api put-public-access-block --bucket ${{ vars.APP }}-web-bucket-prod --public-access-block-configuration "BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false"
     - name: Deploy Client Assets for Prod Environment
       uses: serverless/github-action@v3.1		
       with:		
