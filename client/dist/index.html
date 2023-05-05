@@ -41,14 +41,12 @@
         const decoded = jwt_decode(idToken);
         sessionJWTToken = response;
         userEmail = response.email;
-        renderTable();
-
 
         console.log(decoded);
         if (decoded != null) {
           console.log("entered");
           document.getElementById('table-container').style.display = 'block';
-
+          renderTable();
         }
       }
     </script>
