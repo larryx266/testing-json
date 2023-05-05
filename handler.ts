@@ -63,13 +63,13 @@ function validateSchema(instance: any): ValidationResult {
 
 app.use(express.json({ limit: '20MB' })); //To enable larger file upload upto 20M
 
-/*const corsOptions = {
+const corsOptions = {
     origin: "*",
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
-  };*/
-app.use(cors());//corsOptions));
+  };
+app.use(cors(corsOptions));
 
 app.post("/heartbeat", async function (req: Request, res: Response) {
     res.status(200).json(
@@ -89,6 +89,7 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
                     debuglog("Failed to Validate");
                     debuglog(JSON.stringify(err));
                     res.status(401).json({ error: "Unauthorized by Google" });
+                    return;
                 });
         }
         catch
@@ -222,6 +223,7 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
                 {
                     uid: uid
                 });
+            return;
         }
         catch (err) {
             debuglog(JSON.stringify(err));
@@ -229,6 +231,7 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
                 {
                     error: "Could not create user"
                 });
+            return;
         }
     }
     else {
@@ -239,6 +242,7 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
                 error: "Validation Error",
                 validation_result: validation_result.errors
             });
+        return;
     }
     //res.end()
 });
@@ -427,6 +431,7 @@ app.post("/getById", async function (req: Request, res: Response) {
                         {
                             error: "Could not find user with provided Id"
                         });
+                    return;
                 }
             }
         );
@@ -437,7 +442,7 @@ app.post("/getById", async function (req: Request, res: Response) {
                 error: "Could not retreive user",
                 errorString: err
             });
-
+        return;
     }
 });
 
