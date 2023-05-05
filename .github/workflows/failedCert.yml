@@ -1,4 +1,4 @@
-name: Post Certificate Issue Deployment
+name: Deploy Workflow
 
 on: workflow_dispatch
 
@@ -43,6 +43,8 @@ jobs:
       with:
         args: -c "serverless deploy --stage test"
         entrypoint: /bin/sh
+    - name: Set client bucket to public
+      run: aws s3api put-public-access-block --bucket ${{ vars.APP }}-web-bucket-test --public-access-block-configuration "BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false"
     - name: Deploy Client Assests for Test Environment
       uses: serverless/github-action@v3.1		
       with:		
@@ -50,10 +52,13 @@ jobs:
         entrypoint: /bin/sh
     - name: Get test CloudFront distribution domain name
       env:
-        TEST_DISTRIBUTION: ${{ env.TEST_DISTRIBUTION }}
+        TEST_DISTRIBUTION_ID: ${{ env.TEST_DISTRIBUTION_ID }}
+        TEST_DISTRIBUTION_DOMAIN: ${{ env.TEST_DISTRIBUTION_DOMAIN }}
       run: |
-        distribution=$(aws cloudfront list-distributions --query 'DistributionList.Items[?contains(Aliases.Items, `test.${{ vars.ROOT_DOMAIN }}`)].{DomainName:DomainName}' --output text)
-        echo "TEST_DISTRIBUTION=$distribution" >> $GITHUB_ENV
+        test_distribution_id=$(aws cloudfront list-distributions --query 'DistributionList.Items[?Aliases.Items && contains(Aliases.Items, `test.${{ vars.ROOT_DOMAIN }}`)].{ID:Id}' --output text)
+        echo "TEST_DISTRIBUTION_ID=$test_distribution_id" >> $GITHUB_ENV
+        test_distribution_domain=$(aws cloudfront list-distributions --query 'DistributionList.Items[?Aliases.Items && contains(Aliases.Items, `test.${{ vars.ROOT_DOMAIN }}`)].{DOMAINNAME:DomainName}' --output text)
+        echo "TEST_DISTRIBUTION_DOMAIN=$test_distribution_domain" >> $GITHUB_ENV
     - name: Get Hosted Zone ID
       env: 
         HOSTED_ZONE_ID: ${{ env.HOSTED_ZONE_ID }}
@@ -62,7 +67,7 @@ jobs:
         echo "HOSTED_ZONE_ID=$hosted_zone_id" >> $GITHUB_ENV
     - name: Create test CNAME record
       run: |
-        aws route53 change-resource-record-sets --hosted-zone-id ${{ env.HOSTED_ZONE_ID }} --change-batch '{"Changes":[{"Action":"CREATE","ResourceRecordSet":{"Name":"test.${{ vars.ROOT_DOMAIN }}","Type":"CNAME","TTL":300,"ResourceRecords":[{"Value":"${{ env.TEST_DISTRIBUTION }}" }]}}]}'
+        aws route53 change-resource-record-sets --hosted-zone-id ${{ env.HOSTED_ZONE_ID }} --change-batch '{"Changes":[{"Action":"CREATE","ResourceRecordSet":{"Name":"test.${{ vars.ROOT_DOMAIN }}","Type":"CNAME","TTL":300,"ResourceRecords":[{"Value":"${{ env.TEST_DISTRIBUTION_DOMAIN }}" }]}}]}'
     - name: Get test API Gateway endpoint
       env:
         TEST_ENDPOINT: ${{ env.ENDPOINT }}
@@ -81,6 +86,9 @@ jobs:
       with:		
         args: -c "echo 'y' | serverless client deploy --stage test"		
         entrypoint: /bin/sh
+    - name: Create CloudFront Invalidation
+      run: |
+        aws cloudfront create-invalidation --distribution-id ${{ env.TEST_DISTRIBUTION_ID }} --paths "/*"
     - name: Newman Action
       run: newman run test/jsonschema-serverless-crud.postman_collection.json  --environment test/jsonschema-serverless-crud.postman_environment.json --env-var "server_url=${{ env.ENDPOINT }}" --env-var "sampleRequest=$(cat test/sampleRequest.json)"
     - name: Set API Handler to Production Version
@@ -98,13 +106,13 @@ jobs:
         entrypoint: /bin/sh 
     - name: Get prod CloudFront distribution domain name
       env:
-        PROD_DISTRIBUTION: ${{ env.PROD_DISTRIBUTION }}
+        PROD_DISTRIBUTION_DOMAIN: ${{ env.PROD_DISTRIBUTION_DOMAIN }}
       run: |
-        distribution=$(aws cloudfront list-distributions --query 'DistributionList.Items[?contains(Aliases.Items, `prod.${{ vars.ROOT_DOMAIN }}`)].{DomainName:DomainName}' --output text)
-        echo "PROD_DISTRIBUTION=$distribution" >> $GITHUB_ENV
+        prod_distribution_domain=$(aws cloudfront list-distributions --query 'DistributionList.Items[?Aliases.Items && contains(Aliases.Items, `prod.${{ vars.ROOT_DOMAIN }}`)].{DOMAINNAME:DomainName}' --output text)
+        echo "PROD_DISTRIBUTION_DOMAIN=$prod_distribution_domain" >> $GITHUB_ENV
     - name: Create prod CNAME record
       run: |
-        aws route53 change-resource-record-sets --hosted-zone-id ${{ env.HOSTED_ZONE_ID }} --change-batch '{"Changes":[{"Action":"CREATE","ResourceRecordSet":{"Name":"prod.${{ vars.ROOT_DOMAIN }}","Type":"CNAME","TTL":300,"ResourceRecords":[{"Value":"${{ env.PROD_DISTRIBUTION }}" }]}}]}'
+        aws route53 change-resource-record-sets --hosted-zone-id ${{ env.HOSTED_ZONE_ID }} --change-batch '{"Changes":[{"Action":"CREATE","ResourceRecordSet":{"Name":"prod.${{ vars.ROOT_DOMAIN }}","Type":"CNAME","TTL":300,"ResourceRecords":[{"Value":"${{ env.PROD_DISTRIBUTION_DOMAIN }}" }]}}]}'
     - name: Get prod API Gateway endpoint
       env:
         PROD_ENDPOINT: ${{ env.ENDPOINT }}
