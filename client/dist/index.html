@@ -45,7 +45,7 @@
         console.log(decoded);
         if (decoded != null) {
           console.log("entered");
-          console.display("email 1: " + userEmail);
+          console.log("email 1: " + userEmail);
           document.getElementById('table-container').style.display = 'block';
           displayForm();
           renderTable();
@@ -82,7 +82,7 @@
       function renderTable() {
         const fields = lambdaServer.jschema.properties ? Object.keys(lambdaServer.jschema.properties) : [];
 
-        console.display("email 2: " + userEmail);
+        console.log("email 2: " + userEmail);
 
         // CORS might be able to be fixed with AWS CLI command.
         fetch(lambdaServer.server+"/getByEmail", {
