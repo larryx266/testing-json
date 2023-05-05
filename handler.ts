@@ -426,10 +426,11 @@ app.post("/getById", async function (req: Request, res: Response) {
                     return;
                 }
                 else {
-                    res.status(404).json(
-                        {
-                            error: "Could not find user with provided Id"
-                        });
+                    // res.status(404).json(
+                    //     {
+                    //         error: "Could not find user with provided Id"
+                    //     });
+                    res.json(null);
                     return;
                 }
             }
