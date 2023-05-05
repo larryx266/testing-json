@@ -240,7 +240,7 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
                 validation_result: validation_result.errors
             });
     }
-    res.end()
+    //res.end()
 });
 
 app.post("/getByEmail", async function (req: Request, res: Response) {
