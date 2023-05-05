@@ -267,14 +267,12 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
             return;
         }
 
-    debuglog("email: " + req.body.email);
-
     const getParams: GetParams = {
         TableName: DATA_TABLE,
         FilterExpression: "email = :email",
         ExpressionAttributeValues:
         {
-            ":email": req.body.email.toString()
+            ":email": { S: req.body.email }
         }
     }
 

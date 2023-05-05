@@ -90,9 +90,9 @@
           .then(res => res.json())
           .then((data) => {
             console.log(data);
-            if (!data) {
-              return;
-            }
+            // if (!data) {
+            //   return;
+            // }
             let tableHtml = '<table class="styled-table">';
             tableHtml += '<tr>';
             for (const field of fields) {
