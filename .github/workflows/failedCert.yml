@@ -1,4 +1,4 @@
-name: Deploy Workflow
+name: Post Certificate Issue Deployment
 
 on: workflow_dispatch
 
