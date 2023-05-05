@@ -63,16 +63,16 @@ function validateSchema(instance: any): ValidationResult {
 
 app.use(express.json({ limit: '20MB' })); //To enable larger file upload upto 20M
 
-const corsOptions = {
+/*const corsOptions = {
     origin: "*",
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Origin', 'X-Requested-With', 'Accept', 'x-client-key', 'x-client-token', 'x-client-secret', 'Authorization'],
-  };
-app.use(cors(corsOptions));
+  };*/
+app.use(cors());//corsOptions));
 
 app.post("/heartbeat", async function (req: Request, res: Response) {
-    return res.status(200).json(
+    res.status(200).json(
         {
             status: "heartbeat"
         });
@@ -88,7 +88,8 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
                 .catch(function (err) {
                     debuglog("Failed to Validate");
                     debuglog(JSON.stringify(err));
-                    return res.status(401).json({ error: "Unauthorized by Google" });
+                    res.status(401).json({ error: "Unauthorized by Google" });
+                    return;
                 });
         }
         catch
@@ -218,27 +219,30 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
                     debuglog(JSON.stringify(err));
                 });
 
-            return res.status(200).json(
+            res.status(200).json(
                 {
                     uid: uid
                 });
+            return;
         }
         catch (err) {
             debuglog(JSON.stringify(err));
-            return res.status(500).json(
+            res.status(500).json(
                 {
                     error: "Could not create user"
                 });
+            return;
         }
     }
     else {
         debuglog("Validation Error");
         debuglog(JSON.stringify(validation_result.errors));
-        return res.status(400).json(
+        res.status(400).json(
             {
                 error: "Validation Error",
                 validation_result: validation_result.errors
             });
+        return;
     }
     //res.end()
 });
@@ -253,12 +257,14 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
                 .catch(function (err) {
                     debuglog("Failed to Validate");
                     debuglog(JSON.stringify(err));
-                    return res.status(401).json({ error: "Unauthorized by Google" });
+                    res.status(401).json({ error: "Unauthorized by Google" });
+                    return;
                 });
         }
         catch
         {
-            return res.status(401).json({ error: "Unauthorized" });
+            res.status(401).json({ error: "Unauthorized" });
+            return;
         }
     const getParams: GetParams = {
         TableName: DATA_TABLE,
@@ -323,23 +329,26 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
                     }
 
                     debuglog("getbyEmail Data Count2: " + data.Count)
-                    return res.json(data.Items);
+                    res.json(data.Items);
+                    return;
                 }
                 else {
-                    return res.status(404).json(
+                    res.status(404).json(
                         {
                             error: "Could not find user with provided email"
                         });
+                        return;
                 }
             }
         );
     }
     catch (err) {
-        return res.status(500).json(
+        res.status(500).json(
             {
                 error: "Could not retreive user",
                 errorString: err
             });
+        return;
     }
 });
 
@@ -415,23 +424,26 @@ app.post("/getById", async function (req: Request, res: Response) {
                     }
 
                     debuglog("getbyId Data Count2: " + data.Count)
-                    return res.json(data.Items);
+                    res.json(data.Items);
+                    return;
                 }
                 else {
-                    return res.status(404).json(
+                    res.status(404).json(
                         {
                             error: "Could not find user with provided Id"
                         });
+                    return;
                 }
             }
         );
     }
     catch (err) {
-        return res.status(500).json(
+        res.status(500).json(
             {
                 error: "Could not retreive user",
                 errorString: err
             });
+        return;
     }
 });
 
