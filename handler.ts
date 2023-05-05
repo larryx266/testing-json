@@ -254,11 +254,13 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
                     debuglog("Failed to Validate");
                     debuglog(JSON.stringify(err));
                     res.status(401).json({ error: "Unauthorized by Google" });
+                    return;
                 });
         }
         catch
         {
             res.status(401).json({ error: "Unauthorized" });
+            return;
         }
     const getParams: GetParams = {
         TableName: DATA_TABLE,
@@ -324,12 +326,14 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
 
                     debuglog("getbyEmail Data Count2: " + data.Count)
                     res.json(data.Items);
+                    return;
                 }
                 else {
                     res.status(404).json(
                         {
                             error: "Could not find user with provided email"
                         });
+                        return;
                 }
             }
         );
@@ -340,7 +344,7 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
                 error: "Could not retreive user",
                 errorString: err
             });
-
+        return;
     }
 });
 
