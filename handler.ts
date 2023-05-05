@@ -327,12 +327,14 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
                     res.json(data.Items);
                     return;
                 }
+
+                // no user entries yet (which is ok)
                 else {
-                    res.status(404).json(
-                        {
-                            error: "Could not find user with provided email"
-                        });
-                        return;
+                    // res.status(404).json(
+                    //     {
+                    //         error: "Could not find user with provided email"
+                    //     });
+                    //     return;                    
                 }
             }
         );

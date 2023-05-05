@@ -43,11 +43,9 @@
         console.log(decoded);
         sessionJWTToken = response;
         userEmail = decoded.email;
-        console.log("session token: " + sessionJWTToken);
 
         if (decoded != null) {
           console.log("entered");
-          console.log("email 1: " + userEmail);
           document.getElementById('table-container').style.display = 'block';
           displayForm();
           renderTable();
@@ -83,8 +81,6 @@
       // RENDER TABLE
       function renderTable() {
         const fields = lambdaServer.jschema.properties ? Object.keys(lambdaServer.jschema.properties) : [];
-
-        console.log("email 2: " + userEmail);
 
         // CORS might be able to be fixed with AWS CLI command.
         fetch(lambdaServer.server+"/getByEmail", {
@@ -180,17 +176,14 @@
 
       // Function to call API POST request upon validation success
       function setFormData(formData) {
-          formData.email = userEmail;             
+          formData.email = userEmail;
           formData.jwtToken = sessionJWTToken;
 
           fetch(lambdaServer.server+"/setExperiment",
                           {
                               method: "POST",
-                              
                               body: JSON.stringify(formData),
-                              headers: {//"access-control-allow-origin": "*", 
-                              //"access-control-allow-credentials": "true", 
-                              'Content-Type': 'application/json;charset=utf-8'}
+                              headers: {'Content-Type': 'application/json;charset=utf-8'}
                           }
           ).then(response => response.json())
           .then(formData => {
