@@ -72,7 +72,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.post("/heartbeat", async function (req: Request, res: Response) {
-    res.status(200).json(
+    return res.status(200).json(
         {
             status: "heartbeat"
         });
@@ -88,8 +88,7 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
                 .catch(function (err) {
                     debuglog("Failed to Validate");
                     debuglog(JSON.stringify(err));
-                    res.status(401).json({ error: "Unauthorized by Google" });
-                    return;
+                    return res.status(401).json({ error: "Unauthorized by Google" });
                 });
         }
         catch
@@ -219,30 +218,27 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
                     debuglog(JSON.stringify(err));
                 });
 
-            res.status(200).json(
+            return res.status(200).json(
                 {
                     uid: uid
                 });
-            return;
         }
         catch (err) {
             debuglog(JSON.stringify(err));
-            res.status(500).json(
+            return res.status(500).json(
                 {
                     error: "Could not create user"
                 });
-            return;
         }
     }
     else {
         debuglog("Validation Error");
         debuglog(JSON.stringify(validation_result.errors));
-        res.status(400).json(
+        return res.status(400).json(
             {
                 error: "Validation Error",
                 validation_result: validation_result.errors
             });
-        return;
     }
     //res.end()
 });
@@ -257,14 +253,12 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
                 .catch(function (err) {
                     debuglog("Failed to Validate");
                     debuglog(JSON.stringify(err));
-                    res.status(401).json({ error: "Unauthorized by Google" });
-                    return;
+                    return res.status(401).json({ error: "Unauthorized by Google" });
                 });
         }
         catch
         {
-            res.status(401).json({ error: "Unauthorized" });
-            return;
+            return res.status(401).json({ error: "Unauthorized" });
         }
     const getParams: GetParams = {
         TableName: DATA_TABLE,
@@ -329,26 +323,23 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
                     }
 
                     debuglog("getbyEmail Data Count2: " + data.Count)
-                    res.json(data.Items);
-                    return;
+                    return res.json(data.Items);
                 }
                 else {
-                    res.status(404).json(
+                    return res.status(404).json(
                         {
                             error: "Could not find user with provided email"
                         });
-                        return;
                 }
             }
         );
     }
     catch (err) {
-        res.status(500).json(
+        return res.status(500).json(
             {
                 error: "Could not retreive user",
                 errorString: err
             });
-        return;
     }
 });
 
@@ -424,26 +415,23 @@ app.post("/getById", async function (req: Request, res: Response) {
                     }
 
                     debuglog("getbyId Data Count2: " + data.Count)
-                    res.json(data.Items);
-                    return;
+                    return res.json(data.Items);
                 }
                 else {
-                    res.status(404).json(
+                    return res.status(404).json(
                         {
                             error: "Could not find user with provided Id"
                         });
-                    return;
                 }
             }
         );
     }
     catch (err) {
-        res.status(500).json(
+        return res.status(500).json(
             {
                 error: "Could not retreive user",
                 errorString: err
             });
-        return;
     }
 });
 
