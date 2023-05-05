@@ -248,7 +248,6 @@ app.post("/setExperiment", async function (req: Request, res: Response) {
 });
 
 app.post("/getByEmail", async function (req: Request, res: Response) {
-    debuglog("request: " + req);
         try {
             const ticket: any = await google_client.verifyIdToken(
                 {
@@ -349,7 +348,8 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
         res.status(500).json(
             {
                 error: "Could not retreive user",
-                errorString: err
+                errorString: err,
+                errorReq: req
             });
         return;
     }
