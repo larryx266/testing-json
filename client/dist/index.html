@@ -86,9 +86,7 @@
         fetch(lambdaServer.server+"/getByEmail", {
           method: "POST",
           body: JSON.stringify({email: userEmail, jwtToken: sessionJWTToken}),
-          headers: {//"access-control-allow-origin": "*", 
-          //"access-control-allow-credentials": "true", 
-          'Content-Type': 'application/json;charset=utf-8'},
+          headers: {'Content-Type': 'application/json;charset=utf-8'}
         })
           .then(res => res.json())
           .then((data) => {
@@ -188,7 +186,7 @@
                               body: JSON.stringify(formData),
                               headers: {//"access-control-allow-origin": "*", 
                               //"access-control-allow-credentials": "true", 
-                              'Content-Type': 'application/json;charset=utf-8'},
+                              'Content-Type': 'application/json;charset=utf-8'}
                           }
           ).then(response => response.json())
           .then(formData => {

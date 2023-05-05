@@ -266,6 +266,8 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
             res.status(401).json({ error: "Unauthorized" });
             return;
         }
+        debuglog("testing 1 works");
+
     const getParams: GetParams = {
         TableName: DATA_TABLE,
         FilterExpression: "email = :email",
@@ -274,6 +276,8 @@ app.post("/getByEmail", async function (req: Request, res: Response) {
             ":email": req.body.email
         }
     }
+    debuglog("testing 2 works");
+
     try {
         const Item = await dynamoDbClient.scan(getParams).promise().then(
             data => {
