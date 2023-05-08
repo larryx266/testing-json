@@ -40,7 +40,6 @@
       function handleCredentialResponse(response) {
         const idToken = response.credential;
         const decoded = jwt_decode(idToken);
-
         console.log(decoded);
         sessionJWTToken = response;
         userEmail = decoded.email;
@@ -157,14 +156,15 @@
               console.log("array loop. Accessing ", pathArray[i]);
               file = file[pathArray[i]];
               errorlog = errorlog[pathArray[i]];
+              if (!checkFileExtension(file, fileType)) {
+                console.log("Checking that ", pathArray[i], " is of type ", fileType);
+                //errorlog.addError("File type for " + pathArray[i] + " should be " + fileType);
+              }
             }            
             //console.log("The key of the file is" + pathArray[0] + " and the file is " + file);
 
             // TOOD: Check that the file extension is correct.
-            if (!checkFileExtension(file, fileType)) {
-              console.log("Checking that ", pathArray[0], " is of type ", fileType);
-              errorlog.addError("File type for " + pathArray[0] + " should be " + fileType);
-            }
+
           }
         }
                 
@@ -205,11 +205,6 @@
           renderTable();
       }
 
-      // TODO: Ideally, this would be called only upon successful sign in.
-      // Display the form.
-      //displayForm();
-      //renderTable();
-
     </script>
   </head>
 
@@ -229,4 +224,3 @@
     </script>
   </body>
 </html>
-
