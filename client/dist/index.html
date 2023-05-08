@@ -110,13 +110,10 @@
                   cellValue = JSON.stringify(cellValue, null, 2);
                 }
                 tableHtml += `<td style="padding: 10px;">${cellValue}</td>`;
-
-                //tableHtml += `<td>${row[field]}</td>`;
               }
               tableHtml += '</tr>';
             }
             tableHtml += '</table>';
-            console.log("data: " + tableHtml);
             $('#dataTable').html(tableHtml);
           })
           .catch(err => {
@@ -188,10 +185,24 @@
       }
 
       // Function to call API POST request upon validation success
-      function setFormData(formData) {
+      async function setFormData(formData) {
           formData.email = userEmail;
           formData.jwtToken = sessionJWTToken;
 
+          try {
+            const response = await fetch(lambdaServer.server + "/setExperiment", {
+              method: "POST",
+              body: JSON.stringify(formData),
+              headers: { 'Content-Type': 'application/json;charset=utf-8' }
+            });
+
+            const responseData = await response.json();
+            console.log('Success:', responseData);
+          } 
+          catch (error) {
+            console.error('Error:', error);
+          }
+          /*
           fetch(lambdaServer.server+"/setExperiment",
                           {
                               method: "POST",
@@ -205,7 +216,7 @@
           .catch((error) => {
               console.error('Error:', error);
           });
-          
+          */
           renderTable();
       }
 
