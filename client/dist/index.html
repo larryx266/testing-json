@@ -94,22 +94,22 @@
             if (!data) {
               return;
             }
-            let tableHtml = '<table class="styled-table" style="padding: 10px;">';
+            let tableHtml = '<table class="styled-table">';
             tableHtml += '<tr>';
             for (const field of fields) {
-              tableHtml += `<th>${field}</th>`;
+              tableHtml += `<th style="padding: 10px;">${field}</th>`;
             }
             tableHtml += '</tr>';
             for (const row of data) {
               tableHtml += '<tr>';
               for (const field of fields) {
                 let cellValue = row[field];
-                // Check if the value is an object
+                // Check if the value is an object (assuming it's json formatted if object)
                 if (typeof cellValue === 'object') {
                   // Pretty print the object using JSON.stringify with formatting options
                   cellValue = JSON.stringify(cellValue, null, 2);
                 }
-                tableHtml += `<td>${cellValue}</td>`;
+                tableHtml += `<td style="padding: 10px;">${cellValue}</td>`;
 
                 //tableHtml += `<td>${row[field]}</td>`;
               }
